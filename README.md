@@ -80,7 +80,7 @@ Run any of these with `python <script>.py` from the `Authoritative/` directory. 
 
 | Script | What it does |
 |---|---|
-| `export_pilot5.py`, `export_v13_diversity100.py`, `export_v19_final.py` | Per-run final exporters. Apply the floor filter (drop SOCs with fewer than 5 items), enforce the source-mix gate, normalise option E/F to "All of the above" / "None of the above", randomise correct-letter position, and write the final CSV in the bank schema |
+| `export_pilot5.py`, `export_v13_diversity100.py`, `export_v19_final.py` | Per-run final exporters. Apply the floor filter (drop SOCs with fewer than 5 items), enforce the source-mix gate, normalise option E/F to "All of the above" / "None of the above" and write the final CSV in the bank schema |
 | `finalize_v19_daemon.sh` | Daemon that polls the launcher PIDs and triggers the export step once they all exit (or once enough quota errors accumulate) |
 | `generate_v19_documentation.py` | Walks the run logs and produces a human-readable run report (source distribution, per-SOC stats, verifier-pass counts) |
 
