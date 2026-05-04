@@ -145,7 +145,7 @@ The Community pipeline produces MCQs whose correct answer comes from the upvoted
 | `34_generate_reddit_multi_v5.py` | v5 | Reddit-first multi-correct generator. Prioritises practitioner-voiced advice in the question stem |
 | `37_generate_multi_v6.py` | v6 | Adds AskMetaFilter alongside Reddit; multi-correct verified items |
 | `63_auto_source_prototype.py` | proto | First fully-automated discovery → MCQ pipeline: web-searches for community threads given an occupation |
-| `64_auto_source_v2.py` | v2 | Single-answer items where wrong distractors all come from the same thread (no synthetic distractors) |
+| `64_auto_source_v2.py` | v2 | Single-answer items where wrong distractors all come from the same thread  |
 | `65_auto_source_v3_multivenue.py` | v3 | Multi-venue: Reddit + Stack Exchange in one pass |
 | `66_auto_source_v4_occupation.py` | v4 | Canonical occupation-level pipeline; produced the bulk of the published 1,444-item bank |
 | `69_auto_source_v5_strict.py` | v5 | Stricter source-quality filter on v4 |
