@@ -86,7 +86,7 @@ Run any of these with `python <script>.py` from the `Authoritative/` directory. 
 
 ### End-to-end run, in order
 
-A complete authoritative run reproduces the bank by going through these stages — each step's outputs feed the next.
+A complete authoritative run reproduces the bank by going through these stages; each step's outputs feed the next.
 
 **1. Occupation selection.** `build_wagebill100_setup.py` ingests the BLS Occupational Employment and Wage Statistics release and allocates a target item count to each SOC major group proportional to that group's wage bill, with primaries and a wage-bill-ranked reserve list per major group.
 
@@ -94,23 +94,23 @@ A complete authoritative run reproduces the bank by going through these stages �
 
 **3. Discovery and item generation.** The launcher (`launch_diversity50.py`, or `auto_launch_v19.sh` for the wrapper) shards the occupation list across workers. Each worker calls `pipeline.orchestrator.run` for its occupations. Per occupation, the orchestrator goes through:
 
-  - **Round 0 — academic discovery**: arXiv, PubMed Central efetch, Crossref + Unpaywall queries, restricted to whitelisted academic domains.
-  - **Rounds 1–10 — search-backed discovery**: query expansions combining the canonical occupation title with O*NET sample titles and core-task keywords against the whitelist.
+  - **Round 0, academic discovery**: arXiv, PubMed Central efetch, Crossref + Unpaywall queries, restricted to whitelisted academic domains.
+  - **Rounds 1 to 10, search-backed discovery**: query expansions combining the canonical occupation title with O*NET sample titles and core-task keywords against the whitelist.
   - **Source fetching**: direct urllib first, premium proxy fallback for sites that bot-block.
   - **Section extraction and chunking**: text is cleaned and split on detected section headers; each chunk is sent to `evidence_cards.extract` to pull `(situation, recommendation, verbatim_quote)` triples.
   - **Item building**: each evidence card becomes one MCQ via `item_generator.build`, which enforces option-length parity, no named-source giveaway phrases, and JSON-only output.
 
 **4. Nine verifier passes.** Every successfully built item runs through `pipeline.item_verifier.verify_item`:
 
-  1. **Source entailment** — verifier confirms the correct option is fully entailed by the source quote.
-  2. **Distractor plausibility** — distractors must be on-topic enough that elimination by topicality alone fails (regenerate path: replace the offending distractor and re-enter the verifier).
-  3. **Occupation alignment** — the scenario must be a job task the named occupation actually performs.
-  4. **Question specificity** — the stem must include a concrete scenario; vague stems are rewritten with named tools, time pressure, or constraints (regenerate path).
-  5. **Distractor distinctness** — no two distractors paraphrase the same answer (regenerate path: rewrite a duplicate).
-  6. **Format and length sanity** — option-length parity, no malformed JSON, no source-name giveaway in the correct option (regenerate path on the giveaway sub-pass).
-  7. **Difficulty pretest** — three closed-book models from three providers answer the stem only. All-correct is rejected as too-easy; all-wrong with low verifier confidence is rejected as too-hard-low-conf; everything else is kept and tagged easy/medium/hard.
-  8. **Eliminability judge** — distractors that can be eliminated by general world knowledge alone are flagged and regenerated into more defensible alternatives.
-  9. **Correct-option specificity** — vague-qualifier patterns ("appropriate", "adequate", "follow guidelines") in the correct option are rewritten with concrete details from the source quote (regenerate path).
+  1. **Source entailment**: verifier confirms the correct option is fully entailed by the source quote.
+  2. **Distractor plausibility**: distractors must be on-topic enough that elimination by topicality alone fails (regenerate path: replace the offending distractor and re-enter the verifier).
+  3. **Occupation alignment**: the scenario must be a job task the named occupation actually performs.
+  4. **Question specificity**: the stem must include a concrete scenario; vague stems are rewritten with named tools, time pressure, or constraints (regenerate path).
+  5. **Distractor distinctness**: no two distractors paraphrase the same answer (regenerate path: rewrite a duplicate).
+  6. **Format and length sanity**: option-length parity, no malformed JSON, no source-name giveaway in the correct option (regenerate path on the giveaway sub-pass).
+  7. **Difficulty pretest**: three closed-book models from three providers answer the stem only. All-correct is rejected as too-easy; all-wrong with low verifier confidence is rejected as too-hard-low-conf; everything else is kept and tagged easy/medium/hard.
+  8. **Eliminability judge**: distractors that can be eliminated by general world knowledge alone are flagged and regenerated into more defensible alternatives.
+  9. **Correct-option specificity**: vague-qualifier patterns ("appropriate", "adequate", "follow guidelines") in the correct option are rewritten with concrete details from the source quote (regenerate path).
 
 **5. Acceptance gates.** Items that pass verification are then checked against:
 
