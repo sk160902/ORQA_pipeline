@@ -8,8 +8,12 @@ ORQA_pipeline/
 │                      (federal regulators, statistical agencies, professional
 │                      associations, state licensing boards, academic literature)
 │
-└── Community/       – generates items from community-thread sources
-                       (Reddit, MetaFilter, AllNurses, StackExchange)
+├── Community/       – generates items from community-thread sources
+│                      (Reddit, MetaFilter, AllNurses, StackExchange)
+│
+└── Evaluation/      – closed-book MCQ, open-ended generation, web-search
+                       generation, and open-ended judge/similarity grading
+                       against the produced bank
 ```
 
 Both pipelines share the same downstream evaluation format: each item is a six-option MCQ with the same column schema as the published bank.
@@ -75,6 +79,15 @@ Run any of these with `python <script>.py` from the `Authoritative/` directory. 
 | `post_filter_giveaway.py` | Catches and removes named-source giveaway phrases ("According to the AICPA Code…") that slipped past Pass 6b |
 | `topup_to_n_slots.py` | Floor enforcement: takes the merged bank and topup-runs the pipeline on still-short SOCs until each has at least N items, where N is the published floor |
 | `merge_unfiltered_bank.py` | Merges all worker `items.jsonl` files into one unfiltered bank JSON for downstream filter passes |
+
+### Post-export rebalancing
+
+| Script | What it does |
+|---|---|
+| `rebalance_existing_bank.py` | Operates on the already-exported authoritative bank. Caps each SOC's items, rebalances the source mix (no single domain dominating a SOC), and emits a rebalanced CSV under `output/rebalanced/`. Used to derive the floor-1 balanced bank from the raw 1,385-item export |
+| `build_balanced_occupations_bank.py` | Balances *occupations* per SOC major group on top of the rebalanced bank, producing the occupation-balanced bank under `output/balanced_occupations/`. This is the CSV that downstream evaluation runs against |
+
+Both scripts assume the upstream paths from the original repo (`v2_pipeline/output/...`, `v2_pipeline/final_bank_results/final_bank.csv`); adjust the `BANK_CSV` / `OUT_DIR` constants at the top if running standalone.
 
 ### Export / docs
 
@@ -216,6 +229,35 @@ Each generator runs as `python <script>.py --from-csv occupations.csv --target N
 
 ---
 
-## Common downstream evaluation
+## Evaluation/
 
-Both pipelines emit the same six-option MCQ format with columns `source_url, occupation, question, option_A, option_B, option_C, option_D, option_E, option_F, correct_answer`. Items from either pipeline can be loaded by the evaluation script (`102_eval_15models.py` in the parent directory) to produce per-model accuracy at three seeds per item.
+Common downstream evaluation. Both pipelines emit the same six-option MCQ format with columns `source_url, occupation, question, option_A, option_B, option_C, option_D, option_E, option_F, correct_answer`. The evaluation scripts in `Evaluation/` run against that bank format and produce the per-model accuracy / open-ended / web-search / judge columns that the published results report.
+
+### Closed-book MCQ
+
+| Script | What it does |
+|---|---|
+| `102_eval_15models.py` | Evaluates 15 models × 3 seeds × N items in MCQ format, closed-book. Calls real provider APIs (OpenAI, Anthropic, Together, Google) using `api_key*.txt` files at the project root |
+| `103_launch_eval_workers.py` | Parallel worker launcher around `102_eval_15models.py` for large banks |
+
+### Open-ended generation
+
+| Script | What it does |
+|---|---|
+| `run_open_ended_all_models.py` | For every item in the bank, gets a free-form answer from each of the 15 models with no options shown. Resumable per-model checkpoints under `open_ended_runs/`; final merge writes one column per model into the output CSV |
+
+### Web-search-enabled generation
+
+| Script | What it does |
+|---|---|
+| `run_websearch_all_models.py` | Same shape as `run_open_ended_all_models.py` but each model is allowed to call its provider's web-search tool, so the resulting accuracies measure the open-web condition (not closed-book) |
+
+### Open-ended grading
+
+| Script | What it does |
+|---|---|
+| `judge_open_ended.py` | Two scores per (item, model) open-ended answer: (1) binary YES/NO from a gpt-4o LLM judge over (question, model_answer, correct_option), and (2) cosine similarity between OpenAI embeddings of `model_answer` and `correct_option_text` |
+
+### Paths and keys
+
+All five scripts expect the original project layout: the bank CSV under `v2_pipeline/paper_results/`, output CSVs in sibling subdirectories there, and API keys in `api_key.txt` / `api_key_anthropic.txt` / `api_key_together.txt` / `api_key_gemini.txt` at the project root. When running standalone from elsewhere, change the `ROOT`, `BANK`, `OUT_DIR`, `FINAL_CSV` constants at the top of each script and point the key paths to wherever the keys live.

@@ -2,7 +2,7 @@
 
 Differences from launch_pilot20_parallel.py:
   - Reads from output/pilot20_v2_chunk.csv (now 50 SOCs)
-  - Uses wage-bill reserves (reserves_v2_expanded.json) per plan §3.4
+  - Uses wage-bill reserves (reserves_v2_expanded.json)
   - Hard ≥15 floor cleanup at the end: drops any occupation under 15 items
     from final bank (whether primary or replacement)
   - Writes final bank with publisher distribution
@@ -154,8 +154,8 @@ def main():
     n_items = sum(1 for _ in items_path.open())
     print(f"  merged: {n_items} items, {len(merged_stats)} occupation stat entries")
 
-    # ===== Plan §3.4 replacement pass with wage-bill reserves =====
-    print("\nRunning replacement coordinator (plan §3.4 with wage-bill reserves)...")
+    # ===== Replacement pass with wage-bill reserves =====
+    print("\nRunning replacement coordinator (wage-bill reserves)...")
     sys.path.insert(0, str(ROOT))
     from pipeline import config, orchestrator, post_replace
 
@@ -200,7 +200,7 @@ def main():
     replacements_log = []
     fully_failed_socs: set[str] = set()
 
-    log(f"\n========== PARALLEL ITERATIVE REPLACEMENT PASS (plan §3.4) ==========")
+    log(f"\n========== PARALLEL ITERATIVE REPLACEMENT PASS ==========")
     log(f"Workers: {args.workers}  |  Triggers: items<{args.min_items} OR top-pub>70% OR n_pubs<2 OR n_docs<3")
     log(f"Strategy: try each reserve in same SOC major group until one yields ≥{args.min_items}, OR all reserves exhausted")
 
@@ -315,9 +315,9 @@ def main():
 
     items_f.close(); cards_f.close()
 
-    # Plan-strict REPLACE filter: drop under-yield primaries that got replaced
+    # Strict REPLACE filter: drop under-yield primaries that got replaced
     if replacements_log:
-        log("\n========== PLAN-STRICT REPLACE FILTER ==========")
+        log("\n========== STRICT REPLACE FILTER ==========")
         result = post_replace.apply_replace_filter(run_dir)
         log(json.dumps(result, indent=2))
 

@@ -1,7 +1,7 @@
 """Independent verification of generated items.
 
-All 7 plan-§11.1 verification passes (occupation level — Pass 2 is occupation
-alignment instead of task alignment per call decision):
+All 7 verification passes (occupation level — Pass 2 is occupation
+alignment instead of task alignment):
 
   Pass 1 — Source authority: code-side check that source is on the per-occupation
            whitelist + tier label is A/B/C (not rejected). Implemented via
@@ -18,7 +18,7 @@ alignment instead of task alignment per call decision):
            any distractor can be eliminated by general knowledge / common sense /
            LLM-reasoning alone (without needing the source). REJECT if any can.
 
-Reject criteria (plan §11.2):
+Reject criteria:
   - unsupported correct answer  (Pass 3 fails)
   - two correct options          (Pass 4: any distractor fully entailed)
   - ambiguous answer             (Pass 5: ambiguous flag set)
@@ -59,7 +59,7 @@ D) {d}
 
 The generator labeled option {correct} as the correct answer.
 
-YOUR TASK — seven independent judgments per plan §11.1 + Abhishek's quality review:
+YOUR TASK — seven independent judgments:
 
 (P2a) occupation_aligned_exact: does this question describe a task or scenario that someone working as the EXACT occupation "{occupation}" would face on the job? false if the question is about an ADJACENT specialty (e.g., asking a "Registered Nurse" question that's actually for a Nurse Practitioner / Clinical Nurse Specialist; asking a "Software Developer" question that's really for a Software Architect / Project Manager / DevOps Engineer; asking a "Cashier" question that's really for a Retail Manager). Adjacent-specialty drift is a REJECT.
 
@@ -74,7 +74,7 @@ YOUR TASK — seven independent judgments per plan §11.1 + Abhishek's quality r
 
 (P4a) entailment per option: for each A/B/C/D, judge if it is FULLY entailed by the source quote.
 
-(P4b) partial_entailment per option (per plan §11.1): for each option, judge if it is PARTIALLY supported (correct under a different assumption, correct except for a small detail, captures part of the right answer).
+(P4b) partial_entailment per option: for each option, judge if it is PARTIALLY supported (correct under a different assumption, correct except for a small detail, captures part of the right answer).
 
 (P5) ambiguous: missing context (jurisdiction/time/version) that makes the correct answer uncertain?
 
@@ -220,7 +220,7 @@ def _pass9_correct_specificity(item: schemas.Item) -> dict:
 
 
 def _pass8_distractor_eliminability(item: schemas.Item) -> dict:
-    """Plan-extension Pass 8: independent LLM judge for distractor eliminability.
+    """Pass 8 (extension): independent LLM judge for distractor eliminability.
 
     Returns dict with:
       ok: bool — True if no distractor is eliminable (pass)
@@ -272,7 +272,7 @@ def _option_length_imbalance(opts: dict, correct: str) -> bool:
 
 
 def _pass1_source_authority(item: schemas.Item) -> tuple[bool, str]:
-    """Plan §11.1 Pass 1: verify source authority.
+    """Pass 1: verify source authority.
 
     Code-side check (no LLM): tier in {A, B, C} (not None / off-whitelist) AND
     URL + publisher metadata are present AND publisher isn't an obvious
@@ -297,7 +297,7 @@ def _pass1_source_authority(item: schemas.Item) -> tuple[bool, str]:
 
 
 def _detect_unfixable_jurisdiction(item: schemas.Item, ambiguous: bool) -> bool:
-    """Plan §11.2 reject criterion: 'unfixable jurisdiction ambiguity'.
+    """Reject criterion: 'unfixable jurisdiction ambiguity'.
 
     Returns True if the source has a jurisdiction limitation AND the question
     stem doesn't echo it AND the verifier flagged ambiguous. In that case the
@@ -645,7 +645,7 @@ def verify_item(item: schemas.Item) -> dict:
         notes = (parsed4.get("notes") or "")[:300]
         parsed = parsed4
 
-    # Plan §11.2: "unfixable jurisdiction ambiguity" detector
+    # "Unfixable jurisdiction ambiguity" detector
     unfixable_jurisdiction = _detect_unfixable_jurisdiction(item, ambiguous)
 
     # Pass 9 — correct option specificity vs distractors (regen if generic)
@@ -772,7 +772,7 @@ def verify_item(item: schemas.Item) -> dict:
     }
     item.verification = v
 
-    # Tier assignment — plan §11.2 strict + Abhishek's quality additions
+    # Tier assignment
     if not pass1_ok:
         item.quality_tier = None  # weak source
     elif not labeled_entailed:
@@ -788,7 +788,7 @@ def verify_item(item: schemas.Item) -> dict:
     elif unfixable_jurisdiction:
         item.quality_tier = None  # unfixable jurisdiction
     elif correct_names_source:
-        item.quality_tier = None  # correct option names the source — REJECT (per Abhishek review)
+        item.quality_tier = None  # correct option names the source — REJECT
     elif not pass9["ok"]:
         item.quality_tier = None  # Pass 9: correct option too generic vs distractors — REJECT
     elif not pass8["ok"]:

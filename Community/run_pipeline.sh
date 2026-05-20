@@ -28,7 +28,7 @@ if [ "$1" == "--test" ]; then
     echo "Running in TEST mode (small sample)"
 fi
 
-# Step 0: Convert CentaurBench tasks to verifiable format (Abhishek's Task #1)
+# Step 0: Convert CentaurBench tasks to verifiable format
 echo ""
 echo "Step 0: Converting CentaurBench tasks to verifiable Q&A..."
 if [ "$TEST_MODE" ]; then

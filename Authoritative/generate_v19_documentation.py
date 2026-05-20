@@ -99,7 +99,7 @@ def main():
         "whitelists.")
     speaker_note(doc,
         "When presenting V19, lead with the three architectural innovations: proportional "
-        "wage bill allocation per plan section 3.2, regenerate not reject paths inside each "
+        "wage bill allocation, regenerate not reject paths inside each "
         "verifier pass, and the academic source layer that broke the historical CDC dominance "
         "from 31 percent in v4 down to 16.5 percent in v19. Most reviewers will fixate on the "
         "source diversity figure first, so be ready to walk through the donut chart left to right.")
@@ -181,8 +181,8 @@ def main():
         "Wage bill is a derived quantity computed as national employment multiplied by the "
         "occupation's annual wage value. It estimates the total labor income flowing through "
         "an occupation in the United States economy. The pipeline uses wage bill (rather than "
-        "wage alone, or employment alone) as the central weight for SOC selection per Abhishek's "
-        "April 30 call. The intuition is that an occupation's importance in the economy is best "
+        "wage alone, or employment alone) as the central weight for SOC selection. "
+        "The intuition is that an occupation's importance in the economy is best "
         "captured by how much money it represents in aggregate, which is what wage bill measures.")
 
     doc.add_heading('2.7 Item, Card, and Source', level=2)
@@ -217,10 +217,10 @@ def main():
         "national employment multiplied by the annual wage value. This estimates the total "
         "labor income flowing through each occupation in the United States economy.")
 
-    doc.add_heading('3.2 Plan Section 3.2 Proportional Allocation', level=2)
+    doc.add_heading('3.2 Proportional Allocation', level=2)
     body(doc,
         "The selection algorithm in pipeline.occupation_selection.select_proportional follows "
-        "plan section 3.2 strictly. For each of the twenty three SOC major groups (codes 11 "
+        "this procedure strictly. For each of the twenty three SOC major groups (codes 11 "
         "Management through 55 Military Specific), the algorithm computes the group's total "
         "wage_bill as the sum across all detailed occupations in that group, then computes the "
         "group's share of the national wage_bill total.")
@@ -629,7 +629,7 @@ def main():
         "stopping early once 20 items are accepted.")
 
     # ───── 13. REPLACEMENT PHASE ─────
-    doc.add_heading('13. Replacement Phase (Plan §3.4)', level=1)
+    doc.add_heading('13. Replacement Phase', level=1)
     body(doc,
         "After all primary SOCs finish processing, the launcher runs a replacement phase that "
         "backfills under yielded primaries with reserve occupations from the same SOC major "
@@ -708,7 +708,7 @@ def main():
         "as the headline metric. Then point out that the bank now includes academic literature "
         "for the first time (arXiv, PMC, Crossref Unpaywall), which was absent in v4. The 347 "
         "unique source domains (versus 23 in v4) is the second key metric. Diversity is the "
-        "central concern in Abhishek's review feedback and we should be able to defend it "
+        "central concern raised about the bank and we should be able to defend it "
         "quantitatively.")
 
     # Save

@@ -15,9 +15,8 @@ Then classify each question:
       (StackExchange) has_accepted AND top_answer_score >= MIN_TOP_ABS AND top/next >= RATIO_MIN
 
 Non-Reddit/SE questions (government/textbook/academic) are passed through as
-"consensus=unknown" — they can be kept or dropped separately. For Abhishek's
-filter we'd typically keep them (they have institutional authority in lieu of
-crowd consensus).
+"consensus=unknown" — they can be kept or dropped separately. We typically
+keep them (they have institutional authority in lieu of crowd consensus).
 
 Outputs:
   output/consensus_metadata.json    — per-question enrichment

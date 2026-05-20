@@ -46,13 +46,13 @@ def main():
                 seen.add(soc)
 
     # Clean rebuild: do NOT merge v1 pilot 20 entries (they were picked
-    # before the org_specificity sort and §4.2 enrichment landed). Re-pick
+    # before the org_specificity sort and enrichment landed). Re-pick
     # every SOC fresh so the new picker logic applies uniformly.
     existing = {}
     print(f"\nClean rebuild: not merging v1 pilot 20 entries")
     print(f"Need new whitelists for: {len(all_pairs)} SOCs (5 primary + reserves)\n")
 
-    print("Building per-occupation whitelists with org_specificity sort + §4.2 enrichment...")
+    print("Building per-occupation whitelists with org_specificity sort + enrichment...")
     t0 = time.time()
     merged = source_selection.build_whitelists(all_pairs, existing=existing)
     elapsed = time.time() - t0

@@ -1,6 +1,6 @@
-"""§4.2 Optional Enrichment Inputs — at occupation level.
+"""Optional Enrichment Inputs — at occupation level.
 
-Plan-listed enrichment sources:
+Enrichment sources:
   - BLS Occupational Outlook Handbook (OOH) — implemented (no key needed)
   - CareerOneStop Professional Associations API — implemented (needs key, gracefully no-op if absent)
   - CareerOneStop Certification Finder — implemented (same)
@@ -12,8 +12,8 @@ Plan-listed enrichment sources:
 Each implemented enricher returns a list of {name, url, domain, kind, source}
 records that get merged into Pool B before source_selection runs the LLM picker.
 
-All enrichers operate at OCCUPATION level (one fetch per SOC), aligned with
-the call decision to defer task-level work.
+All enrichers operate at OCCUPATION level (one fetch per SOC); task-level
+work is deferred.
 """
 from __future__ import annotations
 import json
@@ -206,7 +206,7 @@ def careeronestop_enrichment(soc: str) -> list[dict]:
 
 
 def enrich_pool(soc: str, occupation_title: str = "") -> list[dict]:
-    """All §4.2 enrichments combined. Returns merged list of enrichment entries
+    """All enrichments combined. Returns merged list of enrichment entries
     suitable for adding to Pool B in source_selection."""
     out: list[dict] = []
     out.extend(ooh_enrichment(soc, occupation_title))

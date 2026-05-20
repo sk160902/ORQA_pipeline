@@ -1,10 +1,10 @@
 """Fetch HTML/PDF documents — direct HTTP first, ScrapingBee fallback.
 
-Per call decision: NO chunking, NO page/section preservation. We grab the
-whole doc, extract text (HTML or PDF), truncate to DOC_TEXT_TRUNCATE chars,
-and pass the blob to the evidence-card extractor.
+Design: NO chunking, NO page/section preservation. We grab the whole doc,
+extract text (HTML or PDF), truncate to DOC_TEXT_TRUNCATE chars, and pass
+the blob to the evidence-card extractor.
 
-Also captures (per plan §7.1): source_title (HTML <title> or PDF metadata),
+Also captures: source_title (HTML <title> or PDF metadata),
 content_hash (sha256 of raw bytes, truncated to 16 hex chars).
 """
 from __future__ import annotations

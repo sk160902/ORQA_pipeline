@@ -1,7 +1,7 @@
 """Wage-bill weighted occupation selection.
 
-Per Abhishek's call: weight by wage_bill = employment × annual_median_wage,
-not just median wage. Stratify across SOC major groups. Pick top-X per group.
+Weight by wage_bill = employment × annual_median_wage, not just median
+wage. Stratify across SOC major groups. Pick top-X per group.
 
 This module is built for the next scale-up beyond the pilot 20. The pilot
 itself reuses the existing pilot 20 list (config.PILOT_20) so we get a
@@ -139,7 +139,7 @@ def select(top_per_group: int = 7, max_total: int = 150) -> list[dict]:
 def select_proportional(*, target_total: int = 100, floor_per_group: int = 3,
                          cap_per_group: int | None = None,
                          reserves_per_group: int = 3) -> tuple[list[dict], dict[str, list[dict]]]:
-    """Plan §3.2 proportional allocation (corrected).
+    """Proportional allocation (corrected).
 
     Allocates `target_total` slots across SOC major groups proportionally to
     each group's share of total wage_bill. Applies floor (≥3 per included

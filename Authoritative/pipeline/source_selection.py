@@ -199,20 +199,20 @@ def _head_check(url: str, timeout: int = 6) -> bool:
 
 
 _KIND_BOOSTS = {
-    # Plan §6.2 optional boosts (additive on top of base specificity)
+    # Optional boosts (additive on top of base specificity)
     "certification_board": 0.40,
     "licensing_body":      0.40,
     "standards_body":      0.30,
     "regulatory_board":    0.30,
     "professional_society": 0.10,
     "advocacy_body":       0.00,
-    "government_handbook": 0.20,  # for §4.2 BLS OOH enrichments
+    "government_handbook": 0.20,  # for BLS OOH enrichments
 }
 
 
 def org_specificity(related_count: int, *, kind: str = "", is_onet_ally: bool = False,
                     occupation_specific_domain: bool = False) -> float:
-    """Plan §6.2: org_specificity = 1 / log(2 + n_distinct_occupations_linked)
+    """org_specificity = 1 / log(2 + n_distinct_occupations_linked)
     plus optional boosts per kind, O*NET-Ally status, occupation-specific domain.
 
     Lower related_count (occupation-specific) → higher base specificity.
@@ -233,7 +233,7 @@ def _build_prompt(occupation: str, soc: str, pool_a: list[dict],
     alts = "; ".join(ctx.get("alternate_titles", [])) or "(none)"
     tasks = "\n".join(f"  - {t}" for t in ctx.get("key_tasks", [])) or "  (none)"
     if pool_a:
-        # Sort by org_specificity DESC (most occupation-specific first) per plan §6.2.
+        # Sort by org_specificity DESC (most occupation-specific first).
         # Pool A doesn't carry `kind` until after the LLM picks, so use base score
         # (related_count only) for the pre-pick ordering.
         sorted_a = sorted(pool_a, key=lambda c: org_specificity(c.get("related_count", 99)), reverse=True)
@@ -297,7 +297,7 @@ def _validate(raw: str, pool_a: list[dict], pool_b: list[dict]) -> dict:
 def select_for(occupation: str, soc: str, *, pool_b: list[dict] | None = None) -> dict:
     """Run source selection for one occupation. Returns the validated record.
 
-    Pool B is enriched with §4.2 sources (BLS OOH + CareerOneStop) before
+    Pool B is enriched with BLS OOH + CareerOneStop sources before
     being passed to the LLM picker, so the picker can select from those
     occupation-specific structured sources too. Enrichment entries are also
     included in the validation key set so picks against them survive validation.
@@ -329,7 +329,7 @@ def select_for(occupation: str, soc: str, *, pool_b: list[dict] | None = None) -
     obj["enrichment_count"] = len(enrichment_entries)
     obj["enrichment_sources"] = [e.get("source") for e in enrichment_entries]
 
-    # Plan §6.1: enrich each kept association with the recommended schema
+    # Enrich each kept association with the recommended schema
     # (org_id, source_system, category, is_onet_ally, retrieved_at, notes).
     # Plus compute final org_specificity per pick using kind boost.
     import time as _time
@@ -357,7 +357,7 @@ def select_for(occupation: str, soc: str, *, pool_b: list[dict] | None = None) -
         # is_onet_ally — only Pool B has this signal in the source xlsx; we
         # don't carry it through, so default False (would need pool_b row check).
         spec = org_specificity(rc, kind=kind, occupation_specific_domain=occ_specific)
-        # Determine source_system per plan §6.1
+        # Determine source_system
         if pool_a_keys.get((pick.get("name", ""), d)):
             source_system = "onet_per_soc_associations"
         elif (pick.get("name", ""), d) in pool_b_keys:
@@ -370,7 +370,7 @@ def select_for(occupation: str, soc: str, *, pool_b: list[dict] | None = None) -
                 source_system = "onet_full_xlsx"
         else:
             source_system = "unknown"
-        # Annotate the pick with the §6.1 recommended fields
+        # Annotate the pick with the recommended fields
         pick["org_id"] = f"org_{i:06d}_{soc.replace('-','')}"
         pick["source_system"] = source_system
         pick["category"] = "national" if rc and rc > 5 else "specialist"

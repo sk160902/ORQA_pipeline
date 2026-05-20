@@ -1,6 +1,5 @@
 """MCQ generator — neutral scenario style, harder distractors.
 
-Per Abhishek's call + post-pilot review:
   - Scenario-anchored, NOT first-person Reddit forum style.
   - Distractors must be HARD — no giveaway phrases (banned list below).
   - Correct option must NOT name the source document.
@@ -21,9 +20,8 @@ from . import schemas
 
 # Code-side lint: regexes that catch the giveaway phrases banned in the
 # BUILD_PROMPT. If any distractor matches, the item is rejected.
-# Broadened in response to Abhishek's review: catches more variants of
-# "focus on X exclusively" / "disregard" / "skip + open noun" / "solely +
-# without" / "rely on outdated" patterns.
+# Catches variants of "focus on X exclusively" / "disregard" / "skip + open
+# noun" / "solely + without" / "rely on outdated" patterns.
 _GIVEAWAY_DISTRACTOR_RES = [
     # ignore [noun] — broadened beyond fixed noun list
     re.compile(r"\bignore (?:the |this |all )?\w+\b", re.I),
@@ -148,12 +146,12 @@ EVIDENCE CARD
   scenario_seed: "{scenario}"
   correct_action: "{action}"
 
-QUESTION REQUIREMENTS (per plan §10.1)
+QUESTION REQUIREMENTS
   - 1-3 sentences of NEUTRAL situational framing followed by a direct question.
   - DO NOT use first-person voice ("I'm a...", "My...", "I've been...")
   - DO NOT add emotional or stakes language ("worried", "frustrated", "overwhelmed")
   - DO NOT mention or reference the source document.
-  - DO NOT ask about private or local company policy unless the source explicitly defines it (per plan §10.1).
+  - DO NOT ask about private or local company policy unless the source explicitly defines it.
   - The question MUST measure PRACTICAL OCCUPATIONAL COMPETENCE — a decision or action a {occupation} takes while doing the job. NOT certification/exam administration trivia, NOT abstract job-description trivia, NOT labor-market statistics (wages, employment, geography). If the source content is one of those types, decline to generate (return an empty/error JSON).
   - The question MUST be for the EXACT occupation "{occupation}", NOT an adjacent specialty. Examples to avoid:
       • For Registered Nurses: don't write a Nurse Practitioner / Clinical Nurse Specialist / Nurse Manager question — those are different SOC codes
@@ -175,7 +173,7 @@ OPTION REQUIREMENTS
       • "According to NFPA 70, ..." → just state the requirement
     Naming the source makes the answer transparent and gives away the correct option — the option must describe the actual action/rule, not cite the publication.
 
-DISTRACTOR DESIGN (per plan §10.2) — distractors must be PLAUSIBLE-BUT-WRONG. Use one of these eight patterns for each distractor:
+DISTRACTOR DESIGN — distractors must be PLAUSIBLE-BUT-WRONG. Use one of these eight patterns for each distractor:
   1. Wrong threshold (e.g., "30 days" when correct is "60 days")
   2. Wrong exception (applies the rule when an exception applies, or vice versa)
   3. Reversed condition (swap "if X then A" → "if X then B")
@@ -185,7 +183,7 @@ DISTRACTOR DESIGN (per plan §10.2) — distractors must be PLAUSIBLE-BUT-WRONG.
   7. Procedure that's correct for a different occupation, task, or context
   8. Incomplete action (correct first step but missing a required follow-up; or correct action but stopping before the required completion)
 
-DISTRACTORS MUST NOT (per plan §10.2):
+DISTRACTORS MUST NOT:
   - Be absurd
   - Be stylistically different from the correct answer
   - Be much longer or shorter than the correct answer
@@ -242,7 +240,7 @@ YOUR TASK: Write a REPLACEMENT for option {weak_letter} that is:
 1. PLAUSIBLE-BUT-WRONG — a real action/rule/threshold a {occupation} might genuinely consider, but incorrect for THIS scenario
 2. NOT eliminable by general knowledge / common sense / basic literacy / LLM reasoning
 3. Stylistically similar in length and tone to the other options
-4. Use ONE of these patterns (per plan §10.2):
+4. Use ONE of these patterns:
    - Wrong threshold (different specific number, different time period)
    - Wrong exception (apply rule when exception applies, or vice versa)
    - Reversed condition
@@ -370,7 +368,7 @@ creating a "two correct options" problem. The verifier said: "{reason}"
 YOUR TASK: Write a REPLACEMENT for option {entailed_letter} that is:
 1. PLAUSIBLE-BUT-WRONG — a real action a {occupation} might genuinely consider, but incorrect for THIS scenario
 2. CLEARLY NOT SUPPORTED by the source quote — must be inconsistent with or unrelated to the rule the source describes
-3. Use ONE of these patterns (per plan §10.2):
+3. Use ONE of these patterns:
    - Wrong threshold (different specific number, different time period)
    - Wrong exception (apply rule when exception applies, or vice versa)
    - Reversed condition
@@ -789,7 +787,7 @@ def build_item(card: schemas.EvidenceCard) -> tuple[schemas.Item | None, str | N
 
     abcd_only = {l: opts[l].strip() for l in "ABCD"}
 
-    # Quality lint per Abhishek's review:
+    # Quality lint:
     # (a) reject if any distractor uses a banned giveaway phrase
     err = _check_giveaway_distractors(abcd_only, ca)
     if err:

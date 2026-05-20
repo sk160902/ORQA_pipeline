@@ -1,13 +1,13 @@
 """Dataclasses for evidence cards and items.
 
-Per Abhishek's call: evidence cards are the audit-trail artifact between
-source discovery and MCQ generation. Each item points to its evidence card
-via evidence_id so a reviewer can click through (item → evidence → source)
-without re-reading the source document.
+Evidence cards are the audit-trail artifact between source discovery and
+MCQ generation. Each item points to its evidence card via evidence_id so a
+reviewer can click through (item → evidence → source) without re-reading
+the source document.
 
-We are running at OCCUPATION level (not task level), per the call decision.
-The task_context field carries the top-N O*NET tasks for the occupation as
-flavor / discovery anchor, not as a per-item task binding.
+We are running at OCCUPATION level (not task level). The task_context field
+carries the top-N O*NET tasks for the occupation as flavor / discovery
+anchor, not as a per-item task binding.
 """
 from __future__ import annotations
 from dataclasses import dataclass, field, asdict
@@ -29,24 +29,24 @@ class EvidenceCard:
     distinct fact). Each card is the anchor for one MCQ.
     """
     evidence_id: str
-    source_id: str  # plan §9.1: stable per-source-document id (sha-derived from content_hash)
+    source_id: str  # stable per-source-document id (sha-derived from content_hash)
     onet_soc_code: str
     occupation_title: str
     source_url: str
     source_domain: str
     source_title: str  # parsed from HTML <title> or PDF metadata
     publisher: str  # human-readable publisher (e.g. "American Dental Hygienists' Association")
-    publication_date: str  # plan §7.1: from PDF metadata or HTML <meta>; "" if unknown
-    version: str  # plan §7.1: edition/version string; "" if unknown
+    publication_date: str  # from PDF metadata or HTML <meta>; "" if unknown
+    version: str  # edition/version string; "" if unknown
     content_hash: str  # sha256(raw bytes)[:16] for dedup / reproducibility
     source_tier: str  # "A" (national assoc / cert board / state board / .gov), "B" (other), "C" (vendor)
     source_quote: str  # verbatim ≤500 chars from the doc
     source_backed_claim: str  # one-sentence factual claim entailed by the quote
     scenario_seed: str  # short situational frame (1-2 sentences) to anchor the MCQ
     correct_action: str  # the recommended action / answer the source supports
-    limitations: str = ""  # jurisdiction / time / version / scope limits, if any (per §9.2)
+    limitations: str = ""  # jurisdiction / time / version / scope limits, if any
     question_potential: str = "medium"  # "high" / "medium" / "low" - LLM judgment of MCQ-suitability
-    cognitive_type: Optional[str] = None  # plan §9.1: applied_rule_reasoning / threshold_recall / etc.
+    cognitive_type: Optional[str] = None  # applied_rule_reasoning / threshold_recall / etc.
     task_context: list[str] = field(default_factory=list)  # top-N O*NET tasks for this occupation
     fetched_at: str = field(default_factory=lambda: time.strftime("%Y-%m-%d"))
 
@@ -90,7 +90,7 @@ class Item:
     """An accepted MCQ. Points back to its evidence card via evidence_id."""
     item_id: str
     evidence_id: str
-    source_id: str  # plan §10.3: paper-roster source identifier
+    source_id: str  # paper-roster source identifier
     onet_soc_code: str
     occupation_title: str
     source_url: str

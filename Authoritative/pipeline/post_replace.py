@@ -1,16 +1,16 @@
-"""Plan-strict REPLACE filter (per plan §3.4).
+"""Strict REPLACE filter.
 
 When the orchestrator's replacement pass runs a reserve occupation in place
-of an under-yield primary, the plan calls for the primary to be REMOVED from
-the bank — not kept alongside the replacement. This module post-processes a
-run directory to apply that semantics:
+of an under-yield primary, the primary is REMOVED from the bank — not kept
+alongside the replacement. This module post-processes a run directory to
+apply that semantics:
 
   - Reads run_dir/replacements.json
   - Drops items in run_dir/items.jsonl whose onet_soc_code matches any
     `removed_soc` (those are the under-yield primaries that got replaced)
   - Archives the dropped items into run_dir/items_removed.jsonl for
     transparency
-  - Updates run_dir/items.jsonl to be the plan-strict bank
+  - Updates run_dir/items.jsonl to be the cleaned bank
   - Re-runs the diagnostics aggregator over the cleaned bank
 
 Idempotent: safe to run multiple times.

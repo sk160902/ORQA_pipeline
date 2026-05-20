@@ -57,7 +57,7 @@ def main():
     ap.add_argument("--run-name", default=None,
                     help="override output dir name")
     ap.add_argument("--min-items-for-accept", type=int, default=15,
-                    help="under this triggers replacement loop (default 15 per plan §3.4)")
+                    help="under this triggers replacement loop (default 15)")
     args = ap.parse_args()
 
     reserves = {}

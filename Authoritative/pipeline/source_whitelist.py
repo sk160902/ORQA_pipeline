@@ -94,7 +94,7 @@ def domain_of(url: str) -> str:
     return h
 
 
-# Plan §6.4 Tier C: vendor documentation, only when the O*NET task involves a
+# Tier C: vendor documentation, only when the O*NET task involves a
 # specific tool/product/software. We don't currently surface Tier C URLs in
 # discovery (per-occupation whitelist excludes vendor domains by default), but
 # if a vendor URL DID get into the bank via an explicit source-selection pick,
@@ -115,7 +115,7 @@ _VENDOR_DOC_DOMAINS = {
 
 def is_vendor_domain(domain: str) -> bool:
     """Return True if domain looks like a vendor / commercial documentation
-    site (Tier C per §6.4). Matches on known vendor list + suffix heuristics."""
+    site (Tier C). Matches on known vendor list + suffix heuristics."""
     if not domain:
         return False
     d = domain.lower().lstrip("www.")
@@ -135,7 +135,7 @@ def tier_for_domain(domain: str, soc: str) -> str:
 
     Tier A: state board, certification/licensing body, standards body, .gov baseline
     Tier B: other professional society / association
-    Tier C: vendor documentation (per plan §6.4)
+    Tier C: vendor documentation
     """
     domain = domain.lower().lstrip("www.")
     if domain.startswith("www."):
@@ -152,7 +152,7 @@ def tier_for_domain(domain: str, soc: str) -> str:
             if kind in ("certification_board", "licensing_body", "standards_body"):
                 return "A"
             return "B"
-    # Plan §6.4: vendor documentation = Tier C (only when justified by tool-specific task)
+    # Vendor documentation = Tier C (only when justified by tool-specific task)
     if is_vendor_domain(domain):
         return "C"
     return "B"

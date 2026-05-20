@@ -92,7 +92,7 @@ def _serper_query(query: str, num: int = 10) -> list[dict]:
     return []
 
 
-# Plan §6.3 query templates. Each runs against the per-occupation domain
+# Query templates. Each runs against the per-occupation domain
 # whitelist (or the baseline .gov/.edu fallback for cross-cutting rounds).
 # These produce richer source coverage than a single OR-pattern query.
 _DOC_TYPE_TEMPLATES = [
@@ -116,7 +116,7 @@ _FALLBACK_TEMPLATES = [
 
 
 def _build_queries(occupation: str, soc: str, aspect: str = "") -> list[str]:
-    """Build site:-restricted query set per plan §6.3.
+    """Build site:-restricted query set.
 
     Round 1 (no aspect): runs the doc-type templates against each per-occupation
     domain (standard / guideline / manual / procedure / code of ethics / cert

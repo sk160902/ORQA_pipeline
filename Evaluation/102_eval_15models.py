@@ -1,5 +1,5 @@
 """
-Step 102: Full 15-model evaluation on the expanded 1,445-item validated bank.
+Full 15-model evaluation on the expanded 1026-item validated bank.
 
 Providers:
   OpenAI:    gpt-5.4, gpt-5.3-chat-latest, gpt-5.2, o3, gpt-4o, gpt-4o-mini, gpt-3.5-turbo
@@ -10,8 +10,8 @@ Providers:
   Google:    gemini-2.5-pro, gemini-1.5-flash
 
 Each (model, item) is evaluated with 3 seeds so we can compute standard errors
-across the full seed×item observation set ("if it's 141×3 observations per
-bar, we can compute SE across those").
+across the full seed×item observation set (e.g. 141 items × 3 seeds = 423
+observations per per-model accuracy bar).
 
 Output CSV: model, occupation, correct_answer, model_answer, is_correct,
             source_url, seed, pipeline_stage, source_tier

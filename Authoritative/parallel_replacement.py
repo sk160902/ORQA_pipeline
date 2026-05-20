@@ -11,7 +11,7 @@ Behavior matches the iterative replacement in launch_pilot20_parallel.py:
   yields ≥min_items_for_accept, OR all reserves exhausted.
 - Successful reserve's items appended to items.jsonl; reserve marked used.
 - Failed slots recorded in replacements.json with all_reserves_exhausted.
-- Final plan-strict REPLACE filter applied at end.
+- Final strict REPLACE filter applied at end.
 
 Usage:
   /usr/local/bin/python3 v2_pipeline/parallel_replacement.py \
@@ -221,8 +221,8 @@ def main():
     items_f.close()
     cards_f.close()
 
-    # Apply plan-strict REPLACE filter
-    log("\n========== PLAN-STRICT REPLACE FILTER ==========")
+    # Apply strict REPLACE filter
+    log("\n========== STRICT REPLACE FILTER ==========")
     result = post_replace.apply_replace_filter(run_dir)
     log(json.dumps(result, indent=2))
 

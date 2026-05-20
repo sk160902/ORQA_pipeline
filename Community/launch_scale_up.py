@@ -97,7 +97,7 @@ def main():
     p.add_argument("--stagger-sec", type=int, default=20,
                    help="seconds to wait between worker launches to avoid rate-limit collisions")
     p.add_argument("--dry-run", action="store_true",
-                   help="print plan but do not write any chunk CSVs or launcher")
+                   help="print run details but do not write any chunk CSVs or launcher")
     args = p.parse_args()
 
     run_dir = OUT / RUN_DIR_NAME

@@ -1,4 +1,4 @@
-"""Diagnostics aggregator (plan §15).
+"""Diagnostics aggregator.
 
 Reads the run's items.jsonl + cards.jsonl + stats.json and prints a
 paper-ready summary table per occupation:
@@ -73,11 +73,11 @@ def per_occupation_summary(items: list[dict]) -> dict:
         if publishers.most_common(1)[0][1] / n > 0.5 and n >= 4:
             flags.append("single_publisher_dominant")  # >50% from one publisher
         if len(publishers) < 2 and n >= 3:
-            flags.append("only_one_publisher")           # plan §15
+            flags.append("only_one_publisher")
         if len(documents) < 2 and n >= 3:
-            flags.append("only_one_source_document")     # plan §15
+            flags.append("only_one_source_document")
         if len(documents) < 3 and n >= 5:
-            flags.append("under_three_source_documents") # plan §18 ("≥3 preferred")
+            flags.append("under_three_source_documents")  # ≥3 source docs preferred
         if tiers.get("A", 0) == 0:
             flags.append("only_tier_B_C")
         if any(c / n > 0.4 for c in letters.values()) and n >= 5:

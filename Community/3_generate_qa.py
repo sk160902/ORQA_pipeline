@@ -28,7 +28,7 @@ from openai import OpenAI
 
 OUTPUT_DIR = "output"
 
-# ─── Default occupations to target (diverse set per conversation) ───
+# ─── Default occupations to target (diverse set) ───
 DEFAULT_OCCUPATIONS = [
     "Dental Assistants",
     "Library Technicians",
@@ -53,7 +53,7 @@ DEFAULT_OCCUPATIONS = [
 ]
 
 # ─── Multi-source content gathering ───
-# Strategy (per Abhishek's guidance):
+# Strategy:
 #   1. OpenAI web search (primary) — finds professional/gov sources with citations
 #   2. PubMed API — for medical/health occupation tasks
 #   3. Wikipedia API — fallback for general knowledge
@@ -230,7 +230,7 @@ def fetch_via_jina(url, max_chars=6000):
     Jina Reader renders pages like a real browser and returns clean text.
     Free, no API key, bypasses bot-blocking.
     This gives us RAW SOURCE TEXT (not LLM-mediated summaries) — critical
-    for ground truth integrity per Abhishek's requirement.
+    for ground truth integrity.
 
     Includes validation to detect error pages, 404s, redirects, and
     other non-content responses that would produce invalid ground truth.
@@ -571,7 +571,7 @@ def generate_search_queries(client, occupation, task, model="gpt-4o-mini"):
 def gather_sources_multi(client, queries, occupation, task, max_sources=5):
     """Gather RAW source text from DIVERSE providers — one source per question.
 
-    Per Abhishek: "from a given source generate a question, from a different
+    Goal: "from a given source generate a question, from a different
     source generate a different question" and "some sources should be Q&A
     where somebody asked a question requiring reasoning and a human gave
     an answer using human reasoning."
@@ -758,7 +758,7 @@ def gather_sources(queries, max_sources=5):
 def generate_qa_from_sources(client, occupation, task, sources, n_questions=5, model="gpt-4o-mini"):
     """Generate verifiable Q&A pairs — ONE question per source.
 
-    Per Abhishek: "from a given source generate a question, and then from
+    Goal: "from a given source generate a question, and then from
     a different source generate a different question."
     Each question gets its own distinct source and citation.
     """

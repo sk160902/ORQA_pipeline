@@ -1,4 +1,4 @@
-"""Difficulty pretest pass (Pass 7 of the v2 plan).
+"""Difficulty pretest pass (Pass 7).
 
 Run 3 small/fast models closed-book on each candidate item. Use spread across
 3 different providers so we hit 3 different rate pools and get genuine
@@ -8,7 +8,7 @@ disagreement signal:
   Together  — meta-llama/Llama-3.3-70B-Instruct-Turbo
   Gemini    — gemini-2.5-flash
 
-Verdict per the v2 plan §11.1:
+Verdict:
   - Reject if all 3 models get it RIGHT (no signal — too easy / answer leakage)
   - Reject if all 3 models get it WRONG AND verifier confidence is low
     (likely broken — `low confidence` proxied as ambiguous OR Tier C)

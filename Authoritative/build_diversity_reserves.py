@@ -1,4 +1,4 @@
-"""Build diversity-curated reserve pool for plan §3.4 compliance.
+"""Build diversity-curated reserve pool.
 
 Same selection rule as primaries: occupations with rich non-CDC professional
 ecosystems and distinct authority bodies. 2-3 reserves per SOC major group

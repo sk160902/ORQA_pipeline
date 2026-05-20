@@ -3,8 +3,8 @@
 Used to anchor discovery search queries beyond the canonical occupation title
 (occupations are often discussed online under multiple names).
 
-NOTE: per the call decision, we operate at OCCUPATION level — we don't bind
-items to specific task IDs. The top-N tasks are search/discovery flavor only.
+NOTE: we operate at OCCUPATION level — we don't bind items to specific
+task IDs. The top-N tasks are search/discovery flavor only.
 """
 from __future__ import annotations
 import csv

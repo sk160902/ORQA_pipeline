@@ -3,7 +3,7 @@
   - source distribution figure (single-pilot, no comparison)
 
 Inputs:
-  v2_pipeline/output/pilot5/items.jsonl  (96 plan-strict items)
+  v2_pipeline/output/pilot5/items.jsonl  (96 items)
 
 Outputs:
   v2_pipeline/output/pilot5/pilot5_bank.csv

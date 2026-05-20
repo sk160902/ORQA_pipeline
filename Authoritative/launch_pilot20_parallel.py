@@ -6,7 +6,7 @@ subdirectory. The coordinator then:
   1. Merges all workers' items.jsonl / cards.jsonl / stats.json
   2. Runs the replacement pass over the merged primary results (so reserves
      are picked from the same SOC major group across the whole batch)
-  3. Applies the plan-strict REPLACE filter (drops under-yield primaries
+  3. Applies the strict REPLACE filter (drops under-yield primaries
      that got replaced)
 
 Workers run with --skip-replacement so they don't each try to replace.
@@ -166,7 +166,7 @@ def main():
         primary_items[d["onet_soc_code"]].append(_ItemShim(d))
 
     # Identify under-yield / source-dominated occupations + run ITERATIVE replacements
-    # Per plan §3.4: replacement keeps trying reserves until one yields ≥15 OR
+    # Replacement keeps trying reserves until one yields ≥15 OR
     # all reserves in the SOC group are exhausted. This guarantees a slot has
     # ≥15 items whenever the source ecosystem can support it; if all reserves
     # under-yield, we drop the slot and the bank reflects that honestly.
@@ -283,9 +283,9 @@ def main():
     items_f.close()
     cards_f.close()
 
-    # Apply plan-strict REPLACE filter — drop under-yield primaries that got replaced
+    # Apply strict REPLACE filter — drop under-yield primaries that got replaced
     if replacements_log:
-        log("\n========== PLAN-STRICT REPLACE FILTER ==========")
+        log("\n========== STRICT REPLACE FILTER ==========")
         result = post_replace.apply_replace_filter(run_dir)
         log(json.dumps(result, indent=2))
 

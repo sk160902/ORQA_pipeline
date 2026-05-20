@@ -39,7 +39,7 @@ def _jaccard(a: set, b: set) -> float:
     return len(a & b) / len(a | b)
 
 
-# Source-mix enforcement (per Abhishek's "OSHA/CDC only where canonical" + per-SOC cap).
+# Source-mix enforcement: "OSHA/CDC only where canonical" + per-SOC cap.
 # Cap any single source domain to MAX_DOMAIN_SHARE_PER_SOC of a SOC's items
 # (after a small grace window so we don't reject the first few items needed to compute share).
 MAX_DOMAIN_SHARE_PER_SOC = 0.30  # no single domain >30% of any SOC's items
@@ -315,7 +315,7 @@ def _publisher_concentration(items_list: list) -> tuple[float, int, int]:
     """Returns (top_publisher_share, n_unique_publishers, n_unique_documents).
 
     Operates on a list of Item objects (not dicts). Used by the replacement
-    pass to apply plan §3.4's source-dominance trigger.
+    pass to apply the source-dominance trigger.
     """
     from collections import Counter
     if not items_list:
@@ -337,7 +337,7 @@ def run(occupations: list[tuple[str, str]], *, run_dir: Path,
     """Run pipeline across occupations. Writes incrementally so a crash
     doesn't lose progress.
 
-    Replacement loop (per v2 plan §3.4 — four triggers):
+    Replacement loop (four triggers):
       After the primary pass, an occupation is replaced if ANY of:
         (a) items_kept < min_items_for_accept (default 15) — count threshold
         (b) top publisher's share > max_publisher_share (default 0.7) — source-dominance
@@ -438,7 +438,7 @@ def run(occupations: list[tuple[str, str]], *, run_dir: Path,
         primary_items[soc] = result["items"]
         primary_soc_to_group[soc] = soc[:2]
 
-    # ---- Replacement pass (per §3.4) ----
+    # ---- Replacement pass ----
     replacements_log = []
     if reserves:
         log(f"\n========== REPLACEMENT PASS ==========")
@@ -496,7 +496,7 @@ def run(occupations: list[tuple[str, str]], *, run_dir: Path,
             })
             replacements_path.write_text(json.dumps(replacements_log, indent=2))
 
-    # Plan-strict REPLACE per §3.4: drop the under-yield primary's items from
+    # Strict REPLACE: drop the under-yield primary's items from
     # the bank when a replacement was successfully run for that SOC. The
     # replacement keeps its items (replacement_for set); the original primary's
     # items are moved to items_removed.jsonl for transparency.
@@ -505,7 +505,7 @@ def run(occupations: list[tuple[str, str]], *, run_dir: Path,
     if reserves and replacements_log:
         from . import post_replace
         result = post_replace.apply_replace_filter(run_dir)
-        log(f"\n========== PLAN-STRICT REPLACE FILTER ==========")
+        log(f"\n========== STRICT REPLACE FILTER ==========")
         log(json.dumps(result, indent=2))
 
     log(f"\n========== RUN END ==========")

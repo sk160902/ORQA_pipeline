@@ -35,10 +35,10 @@ def main():
     def to_onet(soc: str) -> str:
         return soc if "." in soc else f"{soc}.00"
 
-    # Plan §3.2 proportional allocation, scaled to 500 primaries
+    # Proportional allocation, scaled to 500 primaries
     primary_raw, reserves_raw = occupation_selection.select_proportional(
         target_total=500,    # max coverage; expect 200-260 surviving at ≥5, 80-120 at ≥15
-        floor_per_group=3,   # plan §3.2: floor ≥3 per included group
+        floor_per_group=3,   # floor ≥3 per included group
         cap_per_group=80,    # cap to prevent any group from dominating (max ~16% per group)
         reserves_per_group=3,
     )
@@ -47,7 +47,7 @@ def main():
     primary = primary_valid
     # If we lost some to O*NET filter, top up to 130 by including additional candidates
     n_dropped = len(primary_raw) - len(primary_valid)
-    print(f"PLAN §3.2 PROPORTIONAL ALLOCATION")
+    print(f"PROPORTIONAL ALLOCATION")
     print(f"Primaries (proportional, wage-bill weighted): {len(primary)} (dropped {n_dropped} non-O*NET BLS aggregates)")
     # Filter reserves
     reserves = {}
